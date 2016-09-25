@@ -1,0 +1,74 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diary For Advocates</title>
+    <link rel="stylesheet" href="{% static 'Advocate/css/webstyle.css' %}"/>
+</head>
+<body>
+<section id="main-body">
+    <header>
+
+        <h3 id="block-heading">A Diary For Advocates</h3>
+        <ul id="link-list">
+            <li class="nav">
+                <a href="{% url 'contact-us' %}" class="nav-links">Contact Us</a>
+            </li>
+            {% if not user.is_authenticated %}
+                <li class="auth-link nav">
+                    <a href="{% url 'login' %}" class="nav-links">Log In</a>
+                </li>
+                <li class="auth-link nav">
+                    <a href="{% url 'signup' %}" class="nav-links">Sign Up</a>
+                </li>
+            {% else %}
+                <li class="auth-link nav">
+                    <a href="{% url 'logout' %}" class="nav-links">Log Out</a>
+                </li>
+            {% endif %}
+        </ul>
+    </header>
+    <section id="middle-box">
+        <section id="sub-content">
+            {% block content %}
+
+            {% endblock %}
+        </section>
+        {% if user.is_authenticated %}
+            <aside>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/home.png' %}"/>
+                    <a href="{% url 'home' %}" class="sidebar-link"><p class="link-text">Home</p></a>
+                </section>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/calendre.png' %}"/>
+                    <a href="{% url 'calender-current' %}" class="sidebar-link"><p class="link-text">Calender</p></a>
+                </section>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/new-case.png' %}"/>
+                    <a href="{% url 'add_new_case' %}" class="sidebar-link"><p class="link-text">Add New Case</p></a>
+                </section>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/all-cases.png' %}"/>
+                    <a href="{% url 'all-cases' %}" class="sidebar-link"><p class="link-text">All Cases</p></a>
+                </section>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/starred.png' %}"/>
+                    <a href="{% url 'starred-cases' %}" class="sidebar-link"><p class="link-text">Starred Cases</p></a>
+                </section>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/search-case.png' %}"/>
+                    <a href="{% url 'search-cases' %}" class="sidebar-link"><p class="link-text">Search Cases</p></a>
+                </section>
+                <section class="sidebar-item">
+                    <img class="link-img" src="{% static 'Advocate/images/archived.png' %}"/>
+                    <a href="{% url 'archived-cases' %}" class="sidebar-link"><p class="link-text">Archived Cases</p>
+                    </a>
+                </section>
+            </aside>
+        {% endif %}
+    </section>
+</section>
+</body>
+</html>

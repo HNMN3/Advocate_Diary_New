@@ -1,0 +1,16 @@
+{% extends 'Advocate/base.html' %}
+{% block content %}
+    <article id="login-box">
+        <h3 id="box-heading">Log In</h3>
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if wrong %}
+                <p class="wrong-details">
+                    Email or password Incorrect!
+                </p>
+            {% endif %}
+            <input type="submit" value="Log In"/>
+        </form>
+    </article>
+{% endblock %}

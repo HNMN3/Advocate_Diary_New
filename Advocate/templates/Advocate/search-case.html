@@ -1,0 +1,10 @@
+{% extends 'Advocate/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <form id="new-case" action="{% url 'search-cases' %}" method="post">
+        {% csrf_token %}
+        <p class="form-heading">Search Cases</p>
+        {{ form.as_p }}
+        <input type="submit" value="Search"/>
+    </form>
+{% endblock %}

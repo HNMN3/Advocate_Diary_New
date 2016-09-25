@@ -1,0 +1,106 @@
+{% extends 'Advocate/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <button onclick="changeCalender(-1)" id="prev">Prev Month</button>
+    <button onclick="changeCalender(1)" id="next">Next Month</button>
+    <h3 id="calender-heading">Table heading</h3>
+    <table id="calender" cellspacing="0">
+
+        <tr class="calendar-row">
+            {% for day in days %}
+                <th class="calendar-header">{{ day }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in rows %}
+            <tr class="calendar-row">
+                {% for column in columns %}
+                    <td class="calendar-cell" id="t{{ row }}{{ column }}">
+                        <a id="a{{ row }}{{ column }}" href="#" class="cal-link">
+                            <p id="p{{ row }}{{ column }}" class="month-day">0</p>
+                            <article class="calendar-cell" id="ar{{ row }}{{ column }}">
+
+                            </article>
+                        </a>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        var mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var cur = new Date();
+        var cases = {}, key;
+        cur.setDate(1);
+
+        function changeCalender(month) {
+            cur.setMonth(cur.getMonth() + month);
+            var d = new Date(cur);
+            var start = -1 * d.getDay();
+            var i, j, ref, date;
+            d.setDate(d.getDate() + start);
+            for (i = 0; i < 6; i++) {
+                for (j = 0; j < 7; j++) {
+                    ref = i.toString() + j.toString();
+                    document.getElementById(
+                            'p' + ref).innerHTML = d.getDate();
+                    date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+                    document.getElementById('a' + ref).setAttribute('href', '/date-cases/' + date);
+                    var myNode = document.getElementById('ar' + ref);
+                    while (myNode.firstChild) {
+                        myNode.removeChild(myNode.firstChild);
+                    }
+                    if (d.getMonth() != cur.getMonth()) {
+                        document.getElementById('t' + ref).style.backgroundColor = '#E0E0E0';
+                        myNode.style.padding = '50px';
+                    } else {
+                        myNode.style.padding = '5px';
+                        document.getElementById('t' + ref).style.backgroundColor = 'white';
+                        key = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+
+                        if (key in cases) {
+                            var data = cases[key];
+                            if (data.length > 2) {
+                                var p = document.createElement('p');
+                                p.setAttribute('class', 'cal-case');
+                                p.innerHTML = data[0];
+                                myNode.appendChild(p);
+                                p = document.createElement('p');
+                                p.setAttribute('class', 'cal-case');
+                                p.innerHTML = data[1];
+                                myNode.appendChild(p);
+                                p = document.createElement('p');
+                                p.setAttribute('class', 'cal-case');
+                                p.innerHTML = 'More..';
+                                myNode.appendChild(p);
+                            } else {
+                                for (var ind = 0; ind < data.length; ind++) {
+                                    var p = document.createElement('p');
+                                    p.setAttribute('class', 'cal-case');
+                                    p.innerHTML = data[ind];
+                                    myNode.appendChild(p);
+                                }
+                            }
+                        } else {
+                            myNode.style.padding = '50px';
+                        }
+                    }
+                    d.setDate(d.getDate() + 1);
+                }
+            }
+            document.getElementById('calender-heading').innerHTML = mS[cur.getMonth()] + ', ' + cur.getFullYear();
+        }
+
+        {% for case in data %}
+            key = '{{ case.next_date.year }}-{{ case.next_date.month }}-{{ case.next_date.day }}';
+            if (!(key in cases)) {
+                cases[key] = [];
+            }
+            cases[key].push('{{ case.title }}');
+        {% endfor %}
+        console.log(key);
+        changeCalender(0);
+    </script>
+{% endblock %}

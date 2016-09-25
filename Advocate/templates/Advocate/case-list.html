@@ -1,0 +1,103 @@
+{% extends 'Advocate/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    {% if date %}
+        <section id="date-nav-section">
+            <img src="{% static 'Advocate/images/left.png' %}" class="date-nav"/><a
+                href="{% url 'date-cases' prev_date %}" class="date-link"><h3
+                class="nav-date">{{ prev_date }}</h3></a>
+            <p class="today-date">Cases of {{ today }}</p>
+            <a href="{% url 'date-cases' next_date %}" class="date-link right">
+                <h3 class="nav-date">{{ next_date }}</h3></a><img src="{% static 'Advocate/images/right.png' %}"
+                                                                  class="date-nav"/>
+        </section>
+    {% else %}
+        <h2 class="page-heading">{{ heading }}</h2>
+    {% endif %}
+    {% if cases %}
+        <table class="cases-table">
+            <tr class='case-list-row' class='table-row'>
+                <th class='heading-cell'>
+                    Case #
+                </th>
+                <th class='heading-cell'>
+                    Case Title
+                </th>
+                <th class='heading-cell'>
+                    Case Stage
+                </th>
+                <th class='heading-cell'>
+                    Case Type
+                </th>
+                <th class='heading-cell'>
+                    Court Of
+                </th>
+                <th class='heading-cell'>
+                    Next Date
+                </th>
+                <th class='heading-cell'>
+                    Action
+                </th>
+                <th class='heading-cell'>
+                    Confirmation
+                </th>
+            </tr>
+            {% for case in cases %}
+                <tr class='case-list-row' class='table-row'>
+                    <td class='simple-cell'>
+                        <a class="open-case" href="{% url 'update-case' case.case_no %}">{{ case.case_no }}</a>
+                    </td>
+                    <td class='simple-cell'>
+                        {{ case.title }}
+                    </td>
+                    <td class='simple-cell'>
+                        {{ case.case_stage }}
+                    </td>
+                    <td class='simple-cell'>
+                        {{ case.case_type }}
+                    </td>
+                    <td class='simple-cell'>
+                        {{ case.court_of }}
+                    </td>
+                    <td class='simple-cell'>
+                        {{ case.next_date }}
+                    </td>
+                    <td class='simple-cell'>
+                        {% if restore %}
+                            <a class="state-link" href="{% url 'restore-case' case.case_no %}"> <img
+                                    title="Restore Case"
+                                    src="{% static 'Advocate/images/restore.png' %}"
+                                    class="action-image"/></a>
+                        {% else %}
+                            <a class="state-link" href="{% url 'fav-case' case.case_no %}">
+                                {% if case.fav %}
+                                    <img src="{% static 'Advocate/images/starred.png' %}"
+                                         class="action-image"/>
+                                {% else %}
+                                    <img src="{% static 'Advocate/images/UnStarred.png' %}"
+                                         class="action-image"/>
+                                {% endif %}
+                            </a>
+
+                            <a href="{% url 'archive-case' case.case_no %}"><img
+                                    title="Archive Case" src="{% static 'Advocate/images/archived.png' %}"
+                                    class="archived" alt="Archive case"/></a>
+                        {% endif %}
+
+                    </td>
+                    <td class="simple-cell">{{ case.get_confirmation_display }}</td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    {% else %}
+        {% if search %}
+            <h2 class="no-case-heading">No Case present for this search Criteria!!Try again</h2>
+        {% else %}
+            <h2 class="no-case-heading">No Cases here! Add new Case by clicking 'Add New Case' in right submenu.</h2>
+        {% endif %}
+
+    {% endif %}
+{% endblock %}

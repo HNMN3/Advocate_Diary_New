@@ -1,0 +1,14 @@
+{% extends 'Advocate/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    {% if update_case %}
+        <form id="new-case" action="{% url 'update-case' case_no %}" method="post">
+    {% else %}
+        <form id="new-case" action="{% url 'add_new_case' %}" method="post">
+    {% endif %}
+        {% csrf_token %}
+        <p class="form-heading">{{ page_heading }}</p>
+        {{ form.as_p }}
+        <input type="submit" value="{{ button_value }}"/>
+    </form>
+{% endblock %}
